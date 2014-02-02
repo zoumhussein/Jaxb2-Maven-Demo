@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    	http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/aop 
+    	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/batch
+		http://www.springframework.org/schema/batch/spring-batch-2.0.xsd"
+	xmlns:tool="http://www.springframework.org/schema/tool"
+	>
+
+	<context:component-scan base-package="fr.zoumanatraore.restdemo.dao"/>
+	<context:component-scan base-package="fr.zoumanatraore.restdemo.model"/>
+	<context:component-scan base-package="fr.zoumanatraore.restdemo.service"/>
+	
+	<!--
+		#################################################################################
+		##CONFIGURATION FILE
+		#################################################################################
+	-->
+	<context:property-placeholder location="classpath:database.properties" />
+	
+
+	<!--
+		#################################################################################
+		##DATABASE BEANS
+		#################################################################################
+	-->
+	<bean id="tgDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.user}" />
+		<property name="password" value="${db.pwd}" />
+	</bean>
+
+	<bean id="tgSessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="tgDataSource" />
+		<property name="configLocation">
+			<value>classpath:hibernate.cfg.xml</value>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+			<property name="sessionFactory">
+				<ref bean="tgSessionFactory" />
+			</property>
+		</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref bean="tgSessionFactory" />
+		</property>
+	</bean>
+	
+	<!-- initialize a database with sql script -->
+<!--    <jdbc:initialize-database data-source="dataSource" enabled="true" ignore-failures="NONE"> -->
+<!--       <jdbc:script location="classpath*:init-db.sql" /> -->
+<!--       <jdbc:script location="classpath*:init-db-with-drops.sql" /> -->
+<!--    </jdbc:initialize-database> -->
+		
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="false"/>
+	
+	<!--  first job  -->
+<!-- 	<bean id="helloWorldJob" class="fr.zoumanatraore.caimalotoday.batch.MasterJob"/> -->
+	
+<!-- 	<bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+	  <property name="jobClass" value="fr.zoumanatraore.caimalotoday.batch.MasterJob"/>
+	</bean> -->
+
+	<!-- 2nd job   -->
+<!-- 	<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> -->
+<!-- 	  <property name="targetObject" ref="helloWorldJob"/> -->
+<!-- 	  <property name="targetMethod" value="helloWorldStep"/> -->
+<!-- 	  <property name="concurrent" value="false"/>    -->
+<!-- 	</bean> -->
+<!-- 	<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+	  	see the example of method invoking job above
+	 <property name="jobDetail" ref="jobDetail"/>
+		10 seconds
+	 <property name="startDelay" value="10000"/>
+		repeat every 50 seconds
+	  <property name="repeatInterval" value="50000"/>
+	</bean> -->
+	
+<!-- 	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	  <property name="jobDetail" ref="helloWorldJob"/>
+		run every morning at 6 AM
+	  <property name="cronExpression" value="0/10 * * * * ?"/>
+	  <property name="cronExpression" value="0 0 6 * * ?"/>
+	</bean>	 -->
+</beans>

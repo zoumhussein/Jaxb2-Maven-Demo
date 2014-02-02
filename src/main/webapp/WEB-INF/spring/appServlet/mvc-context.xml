@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/aop 
+   	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<context:annotation-config/>
+	<context:component-scan base-package="fr.zoumanatraore.restdemo.controller" />	
+	<context:component-scan base-package="fr.zoumanatraore.restdemo.model" />	
+		
+	
+
+	<beans:bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<beans:property name="basename" value="messages" />
+	</beans:bean>
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<!-- REST WS configuration -->
+
+	<!-- ContentNegociation based-->
+<!-- 	 <beans:bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<beans:property name="order" value="1" />
+		<beans:property name="ignoreAcceptHeader" value="true" />
+		<beans:property name="mediaTypes">
+			<beans:map>
+				<beans:entry key="xml"  value="application/xml"/>
+				<beans:entry key="json" value="application/json"/>
+			</beans:map>
+		</beans:property>
+		<beans:property name="defaultViews">
+			<beans:list>
+				<beans:bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<beans:property name="marshaller" ref="jaxbMarshaller"/>
+				</beans:bean>
+				<beans:bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+					<beans:property name="objectMapper" ref="jaxbJacksonObjectMapper"/>
+				</beans:bean> 
+			</beans:list>
+		</beans:property>
+	 </beans:bean>
+	  
+	ViewName configuration based: xmlView && jsonView
+
+	xmlView: need to add @XmlRootElement to all beans in package
+	<beans:bean id="jaxbMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<beans:property name="contextPath" value="fr.zoumanatraore.restdemo.model"/>
+	</beans:bean>
+	
+	<beans:bean id="xmlView" class="org.springframework.web.servlet.view.xml.MarshallingView">
+		<beans:constructor-arg ref="jaxbMarshaller" />
+	</beans:bean>
+
+	jsonView	
+	<beans:bean id="jaxbJacksonObjectMapper" class="org.codehaus.jackson.map.ObjectMapper"/>
+	
+	<beans:bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+		<beans:property name="objectMapper" ref="jaxbJacksonObjectMapper"/>
+	</beans:bean>
+		
+	<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver" /> -->
+	
+</beans:beans>
